@@ -1,0 +1,28 @@
+typedef NTSTATUS (NTAPI *TNtQueryInformationProcess)(
+    IN HANDLE           ProcessHandle,
+    IN PROCESSINFOCLASS ProcessInformationClass,
+    OUT PVOID           ProcessInformation,
+    IN ULONG            ProcessInformationLength,
+    OUT PULONG          ReturnLength
+    );
+
+HMODULE hNtdll = LoadLibraryA("ntdll.dll");
+if (hNtdll)
+{
+    auto pfnNtQueryInformationProcess = (TNtQueryInformationProcess)GetProcAddress(
+        hNtdll, "NtQueryInformationProcess");
+    
+    if (pfnNtQueryInformationProcess)
+    {
+        DWORD dwProcessDebugPort, dwReturned;
+        NTSTATUS status = pfnNtQueryInformationProcess(
+            GetCurrentProcess(),
+            ProcessDebugPort,
+            &dwProcessDebugPort,
+            sizeof(DWORD),
+            &dwReturned);
+
+        if (NT_SUCCESS(status) && (-1 == dwProcessDebugPort))
+            ExitProcess(-1);
+    }
+}
