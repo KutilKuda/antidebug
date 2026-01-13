@@ -1,0 +1,2 @@
+if (IsDebuggerPresent())
+    ExitProcess(-1);
