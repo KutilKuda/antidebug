@@ -1,0 +1,4 @@
+BOOL bDebuggerPresent;
+if (TRUE == CheckRemoteDebuggerPresent(GetCurrentProcess(), &bDebuggerPresent) &&
+    TRUE == bDebuggerPresent)
+    ExitProcess(-1);
