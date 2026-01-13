@@ -1,0 +1,22 @@
+enum { SystemKernelDebuggerInformation = 0x23 };
+
+typedef struct _SYSTEM_KERNEL_DEBUGGER_INFORMATION { 
+    BOOLEAN DebuggerEnabled; 
+    BOOLEAN DebuggerNotPresent; 
+} SYSTEM_KERNEL_DEBUGGER_INFORMATION, *PSYSTEM_KERNEL_DEBUGGER_INFORMATION; 
+
+bool Check()
+{
+    NTSTATUS status;
+    SYSTEM_KERNEL_DEBUGGER_INFORMATION SystemInfo;
+    
+    status = NtQuerySystemInformation(
+        (SYSTEM_INFORMATION_CLASS)SystemKernelDebuggerInformation,
+        &SystemInfo,
+        sizeof(SystemInfo),
+        NULL);
+
+    return SUCCEEDED(status)
+        ? (SystemInfo.DebuggerEnabled && !SystemInfo.DebuggerNotPresent)
+        : false;
+}
